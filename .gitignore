@@ -3,3 +3,5 @@ venv
 .env
 
 folder_parsed_articles/*
+
+__pycache__/
