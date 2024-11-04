@@ -1,3 +1,5 @@
 venv
 
 .env
+
+folder_parsed_articles/*

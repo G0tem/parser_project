@@ -4,6 +4,9 @@ import json
 import requests
 import datetime
 from fake_useragent import UserAgent
+import os
+import time
+
 
 ua = UserAgent()
 
@@ -11,6 +14,11 @@ headers = {
     'accept': 'application/json, text/plain, */*',
     'user-Agent': ua.google,
 }
+
+# Создайте папку для хранения распарсенных статей
+directory = f"folder_parsed_articles"
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 article_dict = {}
 
@@ -26,7 +34,8 @@ for article in all_hrefs_articles: # проходимся по статьям
     article_link = f'https://habr.com{article.get("href")}' # ссылки на статьи
     article_dict[article_name] = article_link
 
-with open(f"articles_{datetime.datetime.now().strftime('%d_%m_%Y')}.json", "w", encoding='utf-8') as f: 
+file_path = os.path.join(directory, f"articles_{datetime.datetime.now().strftime('%d_%m_%Y')}.json")
+with open(file_path, "w", encoding='utf-8') as f: 
     try:    
         json.dump(article_dict, f, indent=4, ensure_ascii=False)
         print('Статьи были успешно получены')
@@ -41,14 +50,21 @@ def parse_article_page(article_name, article_link):
         soup = BeautifulSoup(req, 'lxml')
         article_content = soup.find('div', class_='article-formatted-body').text.strip()
         parsed_articles[article_name] = article_content
-        name_author = soup.find("span", class_='tm-user-card__name').text.strip()
-        parsed_articles["name_author"] = name_author
+
+        # author
+        try:
+            name_author = soup.find("span", class_='tm-user-card__name').text.strip()
+            parsed_articles["name_author"] = name_author
+        except Exception as e:
+            parsed_articles["name_author"] = None
+        
         author = soup.find('div', class_='tm-article-presenter__header')
         article_link, datetime_attr = parse_author(author)
         parsed_articles["author_link"] = article_link
         parsed_articles["datetime_attr"] = datetime_attr
     except Exception as e:
         print(f"Ошибка парсинга статьи {article_name}: {str(e)}")
+    
     return parsed_articles
 
 def parse_author(author):
@@ -63,10 +79,13 @@ def parse_author(author):
 n = 0
 for article_name, article_link in article_dict.items():
     parsed_articles = parse_article_page(article_name, article_link)
+    time.sleep(3) 
     n += 1
-    with open(f"{n}_srt_pars_articles_{datetime.datetime.now().strftime('%d_%m_%Y')}.json", "w", encoding='utf-8') as f: 
+    file_path = os.path.join(directory, f"{n}_srt_pars_articles.json")
+    with open(file_path, "w", encoding='utf-8') as f: 
         try:  
             json.dump(parsed_articles, f, indent=4, ensure_ascii=False)
             print('Статьи были успешно распарсены')
         except:
             print('Статьи не удалось распарсить')
+
