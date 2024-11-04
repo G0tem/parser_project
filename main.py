@@ -44,7 +44,6 @@ with open(file_path, "w", encoding='utf-8') as f:
 
 def parse_article_page(article_name, article_link):
     parsed_articles = {}
-    # for article_name, article_link in article_dict.items():
     try:
         req = requests.get(article_link, headers=headers).text
         soup = BeautifulSoup(req, 'lxml')
@@ -53,28 +52,31 @@ def parse_article_page(article_name, article_link):
 
         # author
         try:
-            name_author = soup.find("span", class_='tm-user-card__name').text.strip()
-            parsed_articles["name_author"] = name_author
+            full_name_author = soup.find("span", class_='tm-user-card__name').text.strip()
+            parsed_articles["full_name_author"] = full_name_author
         except Exception as e:
-            parsed_articles["name_author"] = None
+            parsed_articles["full_name_author"] = None
         
         author = soup.find('div', class_='tm-article-presenter__header')
-        article_link, datetime_attr = parse_author(author)
+        author_name, article_link, datetime_attr = parse_author(author)
+        
         parsed_articles["author_link"] = article_link
         parsed_articles["datetime_attr"] = datetime_attr
+        parsed_articles["name_author"] = author_name
     except Exception as e:
         print(f"Ошибка парсинга статьи {article_name}: {str(e)}")
     
     return parsed_articles
 
 def parse_author(author):
-    url = author.find('a')
-    article_link = f'https://habr.com{url.get("href")}' # ссылки на автора
+    block_url = author.find('a')
+    author_name = block_url.get('title') # Ник автора
+    article_link = f'https://habr.com{block_url.get("href")}' # ссылки на автора
 
     datastr = author.find("span", class_='tm-article-datetime-published')
     time_element = datastr.find("time")
     datetime_attr = time_element.get("datetime")  # время статьи
-    return article_link, datetime_attr
+    return author_name, article_link, datetime_attr
 
 n = 0
 for article_name, article_link in article_dict.items():
