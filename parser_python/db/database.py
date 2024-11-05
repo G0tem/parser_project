@@ -1,5 +1,6 @@
 import psycopg2
 from db.config import db_name, db_user, db_pass, db_host
+from datetime import datetime
 
 
 def save_database(results):
@@ -10,7 +11,7 @@ def save_database(results):
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles
-        (id SERIAL PRIMARY KEY, article_name TEXT, article_content TEXT, article_link TEXT, full_name_author TEXT, author_link TEXT, datetime_attr TEXT, name_author TEXT)
+        (id SERIAL PRIMARY KEY, article_name TEXT, article_content TEXT, article_link TEXT, full_name_author TEXT, author_link TEXT, datetime_attr TIMESTAMP WITH TIME ZONE, name_author TEXT)
     ''')
     for result in results:
         article_name = list(result.keys())[0]
