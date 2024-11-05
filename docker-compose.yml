@@ -32,7 +32,7 @@ services:
       context: ./parser_python
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8080:8080"
     volumes:
       - ./.env:/parser/.env
     depends_on:

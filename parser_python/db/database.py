@@ -45,12 +45,6 @@ def connect_to_database():
     """
     Connecting to the database
     """
-    # conn = psycopg2.connect(
-    #     host="postgres_parser_python",
-    #     database="postgres",
-    #     user="postgres",
-    #     password="ada32f24gfDSadgAedaacascaefiiuy"
-    # )
     conn = psycopg2.connect(
         host=db_host,
         database=db_name,
