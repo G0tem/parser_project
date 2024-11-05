@@ -1,5 +1,5 @@
 import psycopg2
-from config import db_name, db_user, db_pass, db_host
+from db.config import db_name, db_user, db_pass, db_host
 
 
 def save_database(results):
@@ -8,7 +8,6 @@ def save_database(results):
     """
     conn = connect_to_database()
     cursor = conn.cursor()
-    print("Соединение с базой данных установлено")
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles
         (id SERIAL PRIMARY KEY, article_name TEXT, article_content TEXT, article_link TEXT, full_name_author TEXT, author_link TEXT, datetime_attr TEXT, name_author TEXT)
@@ -22,6 +21,9 @@ def save_database(results):
         datetime_attr = result['datetime_attr']
         name_author = result['name_author']
 
+        # print to console
+        print(f"ИНФОРМАЦИЯ название: {article_name}, ссылка: {article_link}, автор: {name_author}, ссылка на автора: {author_link}, дата: {datetime_attr}, полное имя: {full_name_author}, текст: {article_content[:15]}...")
+        print()
         # We check whether an entry with the same article_link already exists
         cursor.execute('''
             SELECT 1 FROM articles WHERE article_link = %s
