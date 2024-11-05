@@ -23,8 +23,15 @@ def save_database(results):
         name_author = result['name_author']
 
         # print to console
-        print(f"ИНФОРМАЦИЯ название: {article_name}, ссылка: {article_link}, автор: {name_author}, ссылка на автора: {author_link}, дата: {datetime_attr}, полное имя: {full_name_author}, текст: {article_content[:15]}...")
         print()
+        print(f"ИНФОРМАЦИЯ\n"
+            f"название: {article_name}\n"
+            f"ссылка: {article_link}\n"
+            f"автор: {name_author}\n"
+            f"ссылка на автора: {author_link}\n"
+            f"дата: {datetime_attr}\n"
+            f"полное имя: {full_name_author}\n"
+            f"текст: {article_content[:15]}...")
         # We check whether an entry with the same article_link already exists
         cursor.execute('''
             SELECT 1 FROM articles WHERE article_link = %s
