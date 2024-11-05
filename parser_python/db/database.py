@@ -1,9 +1,10 @@
 import psycopg2
+from config import db_name, db_user, db_pass, db_host
 
 
 def save_database(results):
     """
-    Сохраняем данные в базу данных, создаем таблицу если ее нет
+    We save the data to the database, create a table if it does not exist
     """
     conn = connect_to_database()
     cursor = conn.cursor()
@@ -21,7 +22,7 @@ def save_database(results):
         datetime_attr = result['datetime_attr']
         name_author = result['name_author']
 
-        # Проверяем, существует ли уже запись с таким-же article_link
+        # We check whether an entry with the same article_link already exists
         cursor.execute('''
             SELECT 1 FROM articles WHERE article_link = %s
         ''', (article_link,))
@@ -29,22 +30,29 @@ def save_database(results):
             print(f"Статья с article_link '{article_link}' уже существует в базе данных, пропускаем запись")
             continue
 
-        # Если запись не существует, то записываем ее в базу данных
+        # If the record does not exist, then write it to the database
         cursor.execute('''
             INSERT INTO articles (article_name, article_content, article_link, full_name_author, author_link, datetime_attr, name_author)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         ''', (article_name, article_content, article_link, full_name_author, author_link, datetime_attr, name_author))
+        print(f"Запись '{article_name}' добавлена в базу данных")
     conn.commit()
     conn.close()
 
 def connect_to_database():
     """
-    Подключаемся к базе данных
+    Connecting to the database
     """
+    # conn = psycopg2.connect(
+    #     host="postgres_parser_python",
+    #     database="postgres",
+    #     user="postgres",
+    #     password="ada32f24gfDSadgAedaacascaefiiuy"
+    # )
     conn = psycopg2.connect(
-        host="localhost",
-        database="postgres",
-        user="postgres",
-        password="ada32f24gfDSadgAedaacascaefiiuy"
+        host=db_host,
+        database=db_name,
+        user=db_user,
+        password=db_pass
     )
     return conn

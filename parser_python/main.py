@@ -6,12 +6,12 @@ import time
 
 def main():
     """
-    Входная точка логики которая запускается с интервалом в 10 минут
+    Logical entry point running at 10 minute intervals
     """
     asyncio.run(parser_run())
 
-main()
-schedule.every(10).minutes.do(main)
+main()  # run 1 time during startup
+schedule.every(10).minutes.do(main)  # run every 10 minutes
 
 while True:
     schedule.run_pending()

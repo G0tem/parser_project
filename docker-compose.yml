@@ -27,6 +27,19 @@ services:
   #   networks:
   #     - parser_project
 
+  parser:
+    build:
+      context: ./parser_python
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./.env:/parser/.env
+    depends_on:
+      - postgres_db
+    networks:
+      - parser_project
+  
   postgres_db:
     image: postgres:15
     container_name: postgres_parser_python
