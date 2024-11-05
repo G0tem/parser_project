@@ -1,13 +1,18 @@
-from logic_parser.ParserRepository import parser_start
+from logic_parser.ParserRepository import parser_run
+import schedule
+import asyncio
+import time
 
-
-url = 'https://habr.com/ru/articles/'
 
 def main():
-    """Старт логики"""
-    print("Запуск логики")
-    parser_start(url)
+    """
+    Входная точка логики которая запускается с интервалом в 10 минут
+    """
+    asyncio.run(parser_run())
 
-if __name__ == "__main__":
-    main()
+main()
+schedule.every(10).minutes.do(main)
 
+while True:
+    schedule.run_pending()
+    time.sleep(1)
