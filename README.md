@@ -10,6 +10,6 @@
 
 запуск 3х контейнеров:
 
-БД postgres
-api на фреймворке fastapi, ORM - SQLAlchemy, alembic - для работы с миграциями
-Парсер использует BeautifulSoup, библиотеку для асинхронной работы asyncio, aiohttp
+- БД postgres
+- api на фреймворке fastapi, ORM - SQLAlchemy, alembic - для работы с миграциями
+- Парсер использует BeautifulSoup, библиотеку для асинхронной работы asyncio, aiohttp
